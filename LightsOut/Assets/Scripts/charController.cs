@@ -133,7 +133,8 @@ public class charController : MonoBehaviour {
 		}
 		
 		//for jeff
-		//if (transform.position.x % 1 == 0 || transform.position.y % 1 == 0){
+		if (transform.position.x % 1 == 0 || (transform.position.y % 1 == 0)){
+			Debug.Log(inputHorz);
 			if ((pos.x < 0 || pos.x > gameColumns - 1) ) {
 				moveDirection = -moveDirection;
 				pos += moveDirection;
@@ -148,16 +149,22 @@ public class charController : MonoBehaviour {
 				moveDirection = -moveDirection;
 				pos += moveDirection;
 				moveDirection = Vector3.zero;
+				Debug.Log("WALL");
+				Debug.Log(pos);
 				inputHorz = inputVert = 0;
 			} else if (transform.position == pos && inputHorz != 0 && mainGrid.gridMAP [(int)(pos.x + inputHorz), (int)pos.y].tag != "Walls") {
 				pos += Vector3.right * inputHorz;	
 				moveDirection = Vector3.right * inputHorz;
 				inputHorz = inputVert = 0;
+				Debug.Log("HOR");
+				Debug.Log(pos);
 				stepsTaken++;
 			} else if (transform.position == pos && inputVert != 0 && mainGrid.gridMAP [(int)(pos.x), (int)(pos.y + inputVert)].tag != "Walls") {
 				pos += Vector3.up * inputVert;
 				moveDirection = Vector3.up * inputVert;
 				inputHorz = inputVert = 0;
+				Debug.Log("VERT");
+				Debug.Log(pos);
 				stepsTaken++;
 			} else if (transform.position == pos) {
 				pos += moveDirection;
@@ -167,8 +174,7 @@ public class charController : MonoBehaviour {
 
 			}
 			scoreBoard.GetComponent<Text>().text  = "Steps Taken: " + stepsTaken + " Levels Escaped: " + mainGrid.currentLevel;
-		//}
-
+		}
 		transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * moveSpeed);
 	}
 
