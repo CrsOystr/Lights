@@ -33,6 +33,7 @@ public class charController : MonoBehaviour {
 	//score variables
 	public int stepsTaken;
 	public GameObject scoreBoard;
+	public GameObject gameOver;
 
 	//control variablea
 	private float inputHorz;
@@ -132,7 +133,7 @@ public class charController : MonoBehaviour {
 		}
 		
 		//for jeff
-		if (transform.position.x % 1 == 0 || transform.position.y % 1 == 0){
+		//if (transform.position.x % 1 == 0 || transform.position.y % 1 == 0){
 			if ((pos.x < 0 || pos.x > gameColumns - 1) ) {
 				moveDirection = -moveDirection;
 				pos += moveDirection;
@@ -160,14 +161,13 @@ public class charController : MonoBehaviour {
 				stepsTaken++;
 			} else if (transform.position == pos) {
 				pos += moveDirection;
-				//Debug.Log("fucku");
 				if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y)>0){
 					stepsTaken++;
 				}
 
 			}
-			scoreBoard.GetComponent<Text>().text  = "lol" + stepsTaken;
-		}
+			scoreBoard.GetComponent<Text>().text  = "Steps Taken: " + stepsTaken + " Levels Escaped: " + mainGrid.currentLevel;
+		//}
 
 		transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * moveSpeed);
 	}
@@ -184,7 +184,7 @@ public class charController : MonoBehaviour {
 		//sets initial starting location
 		this.transform.position = new Vector3 (0f, 0f, -1);
 		pos = transform.position;
-
+		moveDirection = Vector3.right;
 		gameRows = mainGrid.gridRows;
 		gameColumns = mainGrid.gridColumns;
 		startTimer = Time.time;
@@ -192,8 +192,10 @@ public class charController : MonoBehaviour {
 
 	//kills  character dead
 	public void killCharacter(){
-		//GameObject.Destroy (this);
-		Application.LoadLevel ("Title");
+		moveSpeed = 0;
+
+		gameOver.SetActive (true);
+		//Application.LoadLevel ("Title");
 	}
 
 }
