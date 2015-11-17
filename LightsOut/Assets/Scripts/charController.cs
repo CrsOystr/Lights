@@ -94,14 +94,8 @@ public class charController : MonoBehaviour {
 		}
 	}
 
-	//extremely messy character movement
-	private void moveCharacter(){
-		if (Input.GetAxisRaw ("Horizontal") != 0)
-			inputHorz = Input.GetAxisRaw ("Horizontal");
-		
-		if (Input.GetAxisRaw ("Vertical") != 0)
-			inputVert = Input.GetAxisRaw ("Vertical");
-
+	//handles touch input for movement
+	private void touchInput(){
 		if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Moved) {
 			Vector2 touchDeltaPosition = Input.GetTouch (0).deltaPosition;
 			if (Mathf.Abs (touchDeltaPosition.x) > Mathf.Abs (touchDeltaPosition.y)) {
@@ -123,58 +117,85 @@ public class charController : MonoBehaviour {
 			}
 			Debug.Log ("X, Y: " + touchDeltaPosition.x + ", " + touchDeltaPosition.y);
 		}
-		
-		
+	}
+
+	//extremely messy character movement
+	private void moveCharacter(){
+		if (Input.GetAxisRaw ("Horizontal") != 0)
+			inputHorz = Input.GetAxisRaw ("Horizontal");
+		if (Input.GetAxisRaw ("Vertical") != 0)
+			inputVert = Input.GetAxisRaw ("Vertical");
+
+		touchInput ();
+
 		if ((int)(pos.x + inputHorz) < 0 || (int)(pos.x + inputHorz) > gameColumns - 1) {
 			inputHorz = 0;
 		}
 		if ((int)(pos.y + inputVert) < 0 || (int)(pos.y + inputVert) > gameRows - 1) {
 			inputVert = 0;
 		}
-		
-		//for jeff
-		if (transform.position.x % 1 == 0 || (transform.position.y % 1 == 0)){
-			Debug.Log(inputHorz);
-			if ((pos.x < 0 || pos.x > gameColumns - 1) ) {
-				moveDirection = -moveDirection;
-				pos += moveDirection;
-				moveDirection = Vector3.zero;
-				inputHorz = inputVert = 0;
-			} else if (pos.y < 0 || pos.y > gameRows - 1) {
-				moveDirection = -moveDirection;
-				pos += moveDirection;
-				moveDirection = Vector3.zero;
-				inputHorz = inputVert = 0;
-			} else if (mainGrid.gridMAP [(int)pos.x, (int)pos.y].tag == "Walls") {
-				moveDirection = -moveDirection;
-				pos += moveDirection;
-				moveDirection = Vector3.zero;
-				Debug.Log("WALL");
-				Debug.Log(pos);
-				inputHorz = inputVert = 0;
-			} else if (transform.position == pos && inputHorz != 0 && mainGrid.gridMAP [(int)(pos.x + inputHorz), (int)pos.y].tag != "Walls") {
-				pos += Vector3.right * inputHorz;	
-				moveDirection = Vector3.right * inputHorz;
-				inputHorz = inputVert = 0;
-				Debug.Log("HOR");
-				Debug.Log(pos);
-				stepsTaken++;
-			} else if (transform.position == pos && inputVert != 0 && mainGrid.gridMAP [(int)(pos.x), (int)(pos.y + inputVert)].tag != "Walls") {
-				pos += Vector3.up * inputVert;
-				moveDirection = Vector3.up * inputVert;
-				inputHorz = inputVert = 0;
-				Debug.Log("VERT");
-				Debug.Log(pos);
-				stepsTaken++;
-			} else if (transform.position == pos) {
-				pos += moveDirection;
-				if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y)>0){
-					stepsTaken++;
-				}
 
-			}
-			scoreBoard.GetComponent<Text>().text  = "Steps Taken: " + stepsTaken + " Levels Escaped: " + mainGrid.currentLevel;
+
+		Vector3 xInputDirection = inputHorz * Vector3.right;
+		Vector3 yInputDirection = inputVert * Vector3.up;
+		if (xInputDirection == moveDirection)
+			inputHorz = 0;
+		if (yInputDirection == moveDirection)
+			inputVert = 0;
+
+
+		if (xInputDirection != Vector3.zero && xInputDirection == -moveDirection) {
+			pos += xInputDirection;
+			moveDirection = -moveDirection;
+			Debug.Log("FUCKMER");
+			inputHorz = inputVert = 0;
+		} 
+		if (yInputDirection != Vector3.zero && yInputDirection == -moveDirection) {
+			pos += yInputDirection;
+			moveDirection = -moveDirection;
+			inputHorz = inputVert = 0;
 		}
+
+		if ((pos.x < 0 || pos.x > gameColumns - 1) ) {
+			moveDirection = -moveDirection;
+			pos += moveDirection;
+			moveDirection = Vector3.zero;
+			inputHorz = inputVert = 0;
+		} else if (pos.y < 0 || pos.y > gameRows - 1) {
+			moveDirection = -moveDirection;
+			pos += moveDirection;
+			moveDirection = Vector3.zero;
+			inputHorz = inputVert = 0;
+		} else if (mainGrid.gridMAP [(int)pos.x, (int)pos.y].tag == "Walls") {
+			moveDirection = -moveDirection;
+			pos += moveDirection;
+			moveDirection = Vector3.zero;
+			Debug.Log("WALL");
+			Debug.Log(pos);
+			inputHorz = inputVert = 0;
+		} else if (transform.position == pos && inputHorz != 0 && mainGrid.gridMAP [(int)(pos.x + inputHorz), (int)pos.y].tag != "Walls") {
+			moveDirection = Vector3.right * inputHorz;
+			pos += Vector3.right * inputHorz;	
+			inputHorz = inputVert = 0;
+			Debug.Log("HOR");
+			Debug.Log(pos);
+			stepsTaken++;
+		} else if (transform.position == pos && inputVert != 0 && mainGrid.gridMAP [(int)(pos.x), (int)(pos.y + inputVert)].tag != "Walls") {
+			pos += Vector3.up * inputVert;
+			moveDirection = Vector3.up * inputVert;
+			inputHorz = inputVert = 0;
+			Debug.Log("VERT");
+			Debug.Log(pos);
+			stepsTaken++;
+		} else if (transform.position == pos) {
+			pos += moveDirection;
+			if (Mathf.Abs(moveDirection.x) > 0 || Mathf.Abs(moveDirection.y)>0){
+				stepsTaken++;
+			}
+
+		}
+		scoreBoard.GetComponent<Text>().text  = "Steps Taken: " + stepsTaken + " Levels Escaped: " + mainGrid.currentLevel;
+
 		transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * moveSpeed);
 	}
 
