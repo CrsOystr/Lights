@@ -11,6 +11,7 @@ public class mainGridSript : MonoBehaviour {
 	public GameObject floorTile;
 	public GameObject randomPickup;
 	public GameObject randomEnemy;
+	public GameObject randomEnemy2;
 	public GameObject exitNode;
 	public int randomObjectCount;
 	public int randomWallCount;
@@ -142,7 +143,13 @@ public class mainGridSript : MonoBehaviour {
 				if(gridMAP[lolx,loly].tag != "Walls")
 					break;
 			}
-			GameObject RandEnemy = Instantiate(randomEnemy, new Vector3 (lolx, loly, -1f), Quaternion.identity) as GameObject;
+			int ok = Random.Range(0,2);
+			GameObject RandEnemy;
+			if(ok == 1)
+				 RandEnemy = Instantiate(randomEnemy, new Vector3 (lolx, loly, -1f), Quaternion.identity) as GameObject;
+			else
+				RandEnemy = Instantiate(randomEnemy2, new Vector3 (lolx, loly, -1f), Quaternion.identity) as GameObject;
+
 			RandEnemy.GetComponent<dumbEnemy> ().gameBoard = this.gameObject;
 			RandEnemy.transform.SetParent (this.transform);
 
