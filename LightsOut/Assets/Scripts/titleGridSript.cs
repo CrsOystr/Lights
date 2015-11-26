@@ -21,7 +21,6 @@ public class titleGridSript : MonoBehaviour {
 	private Light[] lightArray;
 	public float lightTime;
 	private float lightTimer;
-	public GameObject startButton;
 
 	// Use this for initialization
 	void Start () {
@@ -29,7 +28,7 @@ public class titleGridSript : MonoBehaviour {
 		lightTimer = Time.time;
 		lightArray = letters.GetComponentsInChildren<Light>();
 		for (int i = 0; i<lightArray.Length; i++) {
-			lightArray[i].intensity = 0;
+			lightArray[i].intensity = 4;
 			lightArray[i].spotAngle = 20;
 		}
 
@@ -122,10 +121,6 @@ public class titleGridSript : MonoBehaviour {
 		}
 		else
 		{
-			if (!startButton.activeSelf)
-			{
-				startButton.SetActive(true);
-			}
 			for (int i = 0; i<lightArray.Length; i++) {
 				lightArray [i].intensity += Time.deltaTime * Random.Range(-15f,15f)/10;     
 				lightArray [i].spotAngle +=Time.deltaTime * Random.Range(-17f,17f);
