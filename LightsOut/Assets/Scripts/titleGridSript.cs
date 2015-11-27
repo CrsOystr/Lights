@@ -130,7 +130,7 @@ public class titleGridSript : MonoBehaviour {
 	}
 
 	//loads the level to play
-	public void loadGame(){
-		Application.LoadLevel ("Nic");
+	public void loadGame(string inputz){
+		Application.LoadLevel (inputz);
 	}
 }
