@@ -147,7 +147,6 @@ public class charController : MonoBehaviour {
 		if (xInputDirection != Vector3.zero && xInputDirection == -moveDirection) {
 			pos += xInputDirection;
 			moveDirection = -moveDirection;
-			Debug.Log("FUCKMER");
 			inputHorz = inputVert = 0;
 		} 
 		if (yInputDirection != Vector3.zero && yInputDirection == -moveDirection) {
